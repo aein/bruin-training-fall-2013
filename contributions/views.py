@@ -44,7 +44,7 @@ class IndexView(TemplateView):
         contributors = Contribution.objects.values('clean_name')\
                     .annotate(contribs=Sum('amount')).order_by('-contribs')
 
-        context['contributors'] = contributors[0:10]
+        context['contributors'] = enumerate(contributors[0:10], start=1)
         context['max_value'] = max(all_vals)
         context['summary_data'] = data
         return context

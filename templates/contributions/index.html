@@ -57,9 +57,9 @@
             </tr>
         </thead>
         <tbody>
-            {% for i in contributors %}
+            {% for num,i in contributors %}
             <tr>
-                <td>{{ i.clean_name }}</td>
+                <td>{{ num }}. {{ i.clean_name }}</td>
                 <td>${{ i.contribs|intcomma }}</td>
             </tr>
             {% endfor %}
