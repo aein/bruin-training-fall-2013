@@ -28,7 +28,9 @@
         clear:both;
     }
     h1 { color:pink;
-        font-size: 75px;}
+        font-size: 75px;
+        text-shadow: 0 -2px 0 rgba(0, 0, 0, 0.25);
+    }
     h2 {
         text-transform:uppercase;
         border-bottom-style:dashed;
@@ -39,6 +41,28 @@
         color:pink;
         text-decoration: underline;
     }
+.progress {
+  height: 25px;
+      font-size:35px;
+}
+
+.bar{
+    font-size:20px !important;
+    line-height: 25px;
+    color:#000 !important;
+}
+span .bar{
+    font-size:35px;
+    line-height: 25px;
+    color:#ccc;
+}
+a {
+   color:#000; 
+}
+a:hover {
+    color:pink;
+}
+
 </style>
 {% endblock %}
 
@@ -49,7 +73,17 @@
     </div>
 
 
-    <h2>Money by contributor: TOP 10</h2>
+    <div class="nav nav-tabs" style="height:auto;">
+      <ul id="myTab" class="nav nav-tabs">
+        <li class="active"><a href="#home" data-toggle="tab">Money by Contributor: Top 10</a></li>
+        <li class=""><a href="#profile" data-toggle="tab">Money to Committees: Top 10</a></li>
+         <li class=""><a href="#zip" data-toggle="tab">Money from Zip Codes: Top 10</a></li>
+          </ul>
+        </li>
+      </ul>
+      <div id="myTabContent" class="tab-content">
+        <div class="tab-pane fade active in" id="home">
+          <h2>Money by contributor</h2>
 <div class="row">
     <div class="span7">
     <table class="table table-hover table-striped">
@@ -72,8 +106,10 @@
     </table></div>
     <div class="span5">
         <div id="myfirstchart" style="height: 400px;"></div></div></div>
+        </div>
 
-    <h2>Money to Committees</h2>
+        <div id="profile" class="tab-pane fade">
+          <h2>Money to Committees</h2>
              <table class="table table-hover table-striped">
         <thead>
             <tr>
@@ -86,24 +122,52 @@
             {% for num,i in contributors3 %}
             <tr>
                 <td>{{ num }}. {{ i.clean_name }}</td>
-                <td>{{ i.committee }}</td>
+                <td>{{ i.committee__name }}</td>
                 <td>${{ i.contribs|intcomma }}</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
+        </div>
+         <div id="zip" class="tab-pane fade">
+          <h2>Money by contributor</h2>
+<div class="row">
+    <div class="span5">
+    <table class="table table-hover table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Zip Code</th>
+              
+            </tr>
+        </thead>
+        <tbody>
+            {% for num,i in zippies %}
+            <tr>
+                <td>{{ num }}. {{ i.zip_code }}</td>
+                <td>${{ i.contribs|intcomma }}</td>
 
-    <h2>Money by Prop.</h2>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table></div>
+    <div class="span6 offset1" style="align:center;">
+        <div id="mysecondchart" style="align:center;height: 365px;width:350px;"></div>        </div>
+
+  </div></div>
+
+         
+
+        <h2>Money by Prop</h2>
     
     {% for i in summary_data %}
-    <h4>Prop. {{ i.prop }}</h4>
-    <div class="bar-container">
-        <span class="bar support" style="width:{% widthratio i.support max_value 800 %}px"></span>
-        <span class="bar-label">${{ i.support|intcomma }}</span>
+    <h3>Prop. {{ i.prop }} : {{ i.short_name }}</h3>
+    <div class="progress progress-success progress-striped active" >
+        <span class="bar support" style="width:{% widthratio i.support max_value 800 %}px;height:100px" >${{ i.support|intcomma }}</span>
+       
     </div>
-    <div class="bar-container">
-        <span class="bar oppose" style="width:{% widthratio i.oppose max_value 800 %}px"></span>
-        <span class="bar-label">${{ i.oppose|intcomma }}</span>
+    <div class="progress progress-danger progress-striped">
+        <span class="bar oppose" style="width:{% widthratio i.oppose max_value 800 %}px;height:100px">${{ i.oppose|intcomma }}</span>
     </div>
     <div class="clear"></div>
     {% endfor %}
@@ -115,20 +179,40 @@ new Morris.Donut({
   element: 'myfirstchart',
   // Chart data records -- each entry in this array corresponds to a point on
   // the chart.
-  data: [
-    { label: 'Molly Munger', value: 44128399.25 },
-    { label: 'Thomas F. Steyer', value: 29580000 },
-    { label: 'Charles T. Munger, Jr.', value: 25693806 },
-    { label: 'Mr. George Joseph', value: 24727126.97 },
-    { label: 'California Teachers Association/Issues PAC', value: 21281214.14 },
-    { label: 'Americans For Job Security', value: 11000000 },
-    { label: 'California Teachers Association Issues PAC (Cta)', value: 10257867.14 },
-    { label: 'Charles Thomas Munger, Jr.', value: 10099765 },
-    { label: 'California State Council of Service Employees Issues Committee', value: 8375966.19 },
-    { label: 'Monsanto Company', value: 8112866.55 },
-   
+  data: {{ moolahcontribs|safe }},
+  backgroundColor: '#fff',
+  labelColor: '#000',
+  colors: [
+    '#0BA462',
+    '#ffaeb9',
+    '#39B580',
+    '#ffb6c1',
+    '#67C69D',
+    'pink',
+    '#95D7BB'
   ],
-  backgroundColor: '#ccc',
+  // The name of the data record attribute that contains x-values.
+  xkey: 'label',
+  // A list of names of data record attributes that contain y-values.
+  ykeys: ['value'],
+  // Labels for the ykeys -- will be displayed when you hover over the
+  // chart.
+  labels: ['Value']
+});
+
+  $(function () {
+    $('#myTab a:last').tab('show')
+  })
+
+</script>
+<script>
+new Morris.Donut({
+  // ID of the element in which to draw the chart.
+  element: 'mysecondchart',
+  // Chart data records -- each entry in this array corresponds to a point on
+  // the chart.
+  data: {{ zip_data|safe }},
+  backgroundColor: '#fff',
   labelColor: '#000',
   colors: [
     '#0BA462',
