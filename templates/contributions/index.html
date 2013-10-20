@@ -14,7 +14,7 @@
 
     }
     .support {
-        background: pink;
+        background: #0BA462;
     }
     .bar-label {
         display:inline-block;
@@ -36,7 +36,8 @@
     }
     th {
         text-transform:uppercase;
-        color:grey;
+        color:pink;
+        text-decoration: underline;
     }
 </style>
 {% endblock %}
@@ -47,14 +48,16 @@
         <h1>Contribution Data</h1>
     </div>
 
-    <h2>Money by contributor: TOP 20</h2>
+
+    <h2>Money by contributor: TOP 10</h2>
 <div class="row">
-    <div class="span5">
+    <div class="span7">
     <table class="table table-hover table-striped">
         <thead>
             <tr>
                 <th>Name</th>
                 <th>Amount</th>
+              
             </tr>
         </thead>
         <tbody>
@@ -62,27 +65,33 @@
             <tr>
                 <td>{{ num }}. {{ i.clean_name }}</td>
                 <td>${{ i.contribs|intcomma }}</td>
+
             </tr>
             {% endfor %}
         </tbody>
     </table></div>
-    <div class="span5 offset1">
-         <table class="table table-hover table-striped">
+    <div class="span5">
+        <div id="myfirstchart" style="height: 400px;"></div></div></div>
+
+    <h2>Money to Committees</h2>
+             <table class="table table-hover table-striped">
         <thead>
             <tr>
                 <th>Name</th>
+                <th>Committee</th>
                 <th>Amount</th>
             </tr>
         </thead>
         <tbody>
-            {% for num,i in contributors2 %}
+            {% for num,i in contributors3 %}
             <tr>
                 <td>{{ num }}. {{ i.clean_name }}</td>
+                <td>{{ i.committee }}</td>
                 <td>${{ i.contribs|intcomma }}</td>
             </tr>
             {% endfor %}
         </tbody>
-    </table></div></div>
+    </table>
 
     <h2>Money by Prop.</h2>
     
@@ -99,4 +108,45 @@
     <div class="clear"></div>
     {% endfor %}
 </div>
+
+<script>
+new Morris.Donut({
+  // ID of the element in which to draw the chart.
+  element: 'myfirstchart',
+  // Chart data records -- each entry in this array corresponds to a point on
+  // the chart.
+  data: [
+    { label: 'Molly Munger', value: 44128399.25 },
+    { label: 'Thomas F. Steyer', value: 29580000 },
+    { label: 'Charles T. Munger, Jr.', value: 25693806 },
+    { label: 'Mr. George Joseph', value: 24727126.97 },
+    { label: 'California Teachers Association/Issues PAC', value: 21281214.14 },
+    { label: 'Americans For Job Security', value: 11000000 },
+    { label: 'California Teachers Association Issues PAC (Cta)', value: 10257867.14 },
+    { label: 'Charles Thomas Munger, Jr.', value: 10099765 },
+    { label: 'California State Council of Service Employees Issues Committee', value: 8375966.19 },
+    { label: 'Monsanto Company', value: 8112866.55 },
+   
+  ],
+  backgroundColor: '#ccc',
+  labelColor: '#000',
+  colors: [
+    '#0BA462',
+    '#ffaeb9',
+    '#39B580',
+    '#ffb6c1',
+    '#67C69D',
+    'pink',
+    '#95D7BB'
+  ],
+  // The name of the data record attribute that contains x-values.
+  xkey: 'label',
+  // A list of names of data record attributes that contain y-values.
+  ykeys: ['value'],
+  // Labels for the ykeys -- will be displayed when you hover over the
+  // chart.
+  labels: ['Value']
+});
+</script>
 {% endblock %}
+
